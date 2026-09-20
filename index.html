@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evrensel TV & Uydu Kanal Editörü</title>
+  <meta name="description" content="Elton, Sunny, Vestel, Toshiba, Regal, SEG ve uydu alıcıları için çok markalı kanal sıralama ve dönüştürme editörü">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container" id="appContainer">
+    <!-- Drag & Drop Overlay -->
+    <div class="dropzone-overlay" id="dropzoneOverlay">
+      <div class="dropzone-box">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <h3>Dosyanızı Buraya Bırakın</h3>
+        <p>.bin, .sdx, .m3u, .csv veya .json dosyasını yükleyin</p>
+      </div>
+    </div>
+
+    <header class="header">
+      <div class="header-left">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="2"></circle>
+            <path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"></path>
+          </svg>
+          <div class="pulse-dot"></div>
+        </div>
+        <div class="title-group">
+          <h1>Evrensel TV & Uydu Kanal Editörü</h1>
+          <div class="brand-bar">
+            <span class="brand-label">Hedef Cihaz / Format:</span>
+            <div class="select-wrapper">
+              <select id="brandSelect" class="brand-dropdown">
+                <option value="bin" selected>🛰️ Elton / Sunny / Axen (ALi .bin)</option>
+                <option value="sdx">📺 Vestel / Regal / Toshiba / SEG (.sdx)</option>
+                <option value="m3u">⚡ M3U / Smart IPTV / Android TV (.m3u)</option>
+                <option value="csv">📊 Excel / CSV Tablosu (.csv)</option>
+                <option value="json">💾 Yedek / JSON Verisi (.json)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <input type="file" id="fileUploadInput" accept=".bin,.sdx,.m3u,.m3u8,.csv,.json" style="display:none;">
+        <button id="uploadBtn" class="btn btn-outline" title="Bilgisayarınızdan veya USB'nizden kanal listesi yükleyin">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          Dosya Yükle
+        </button>
+        <button id="guideBtn" class="btn btn-outline" title="Televizyonunuza USB ile kanal yükleme adımları">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          TV Kılavuzu
+        </button>
+
+        <!-- Dropdown Export Menu -->
+        <div class="export-dropdown-group">
+          <button id="downloadBtn" class="btn btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span id="downloadBtnText">USB İçin İndir (.bin)</span>
+          </button>
+          <button id="exportMenuBtn" class="btn btn-secondary btn-icon-only" title="Diğer Formatlarda İndir">
+            ▼
+          </button>
+          <div class="export-menu" id="exportMenu">
+            <div class="export-menu-header">Farklı Formatlarda İndir:</div>
+            <a href="/api/export?format=bin" class="export-item" download>
+              <span class="ext-badge bin">.bin</span> ALi Çipset (Elton, Sunny, Axen)
+            </a>
+            <a href="/api/export?format=sdx" class="export-item" download>
+              <span class="ext-badge sdx">.sdx</span> Vestel, Regal, Toshiba, SEG
+            </a>
+            <a href="/api/export?format=m3u" class="export-item" download>
+              <span class="ext-badge m3u">.m3u</span> M3U Playlist (IPTV / VLC)
+            </a>
+            <a href="/api/export?format=csv" class="export-item" download>
+              <span class="ext-badge csv">.csv</span> Excel / Tablo Listesi
+            </a>
+            <a href="/api/export?format=json" class="export-item" download>
+              <span class="ext-badge json">.json</span> JSON Veri Yedeği
+            </a>
+          </div>
+        </div>
+
+        <button id="saveBtn" class="btn btn-primary" title="Düzenlediğiniz listeyi ana dosyaya kaydeder">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+          Değişiklikleri Kaydet
+        </button>
+      </div>
+    </header>
+
+    <div class="notification-bar" id="notifBar">
+      <div class="notif-content">
+        <span class="notif-icon">💡</span>
+        <span class="notif-text">Hedef cihazınızı yukarıdan seçip <strong>"USB İçin İndir"</strong> butonuna basın. Kendi TV kanal yedeğinizi sürükleyip bırakarak yükleyebilirsiniz!</span>
+      </div>
+      <button class="notif-close" onclick="this.parentElement.style.display='none'">&times;</button>
+    </div>
+
+    <section class="presets-section">
+      <div class="presets-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        <span>Akıllı İşlemler:</span>
+      </div>
+      <div class="preset-buttons">
+        <button class="preset-btn popular" id="presetPopular">
+          ⭐ Standart Türk TV Sıralaması (TRT1, ATV, KANAL D, SHOW, STAR, TV8, NOW...)
+        </button>
+        <button class="preset-btn clean-garbage" id="presetCleanGarbage" title="Prog-108, Prog-150 ve TEST gibi çöp kanalları siler">
+          🧹 Gereksizleri Temizle (Prog & Test Kanalları)
+        </button>
+        <button class="preset-btn" id="presetSports">
+          ⚽ Spor Kanallarını Başa Al
+        </button>
+        <button class="preset-btn" id="presetNews">
+          📰 Haber Kanallarını Başa Al
+        </button>
+        <button class="preset-btn reset" id="presetReset">
+          🔄 Orijinal Sıraya Sıfırla
+        </button>
+      </div>
+    </section>
+
+    <section class="controls-bar">
+      <div class="search-box">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" placeholder="Kanal adı ara (örn: ATV, NOW, TRT, STAR, SPOR)..." autocomplete="off">
+        <button id="clearSearch" class="clear-search" style="display:none;">&times;</button>
+      </div>
+
+      <div class="filters">
+        <button class="filter-chip active" data-filter="all">Aktif Kanallar (<span id="countAll">0</span>)</button>
+        <button class="filter-chip" data-filter="hd">Sadece HD (<span id="countHD">0</span>)</button>
+        <button class="filter-chip" data-filter="sd">Sadece SD (<span id="countSD">0</span>)</button>
+        <button class="filter-chip" data-filter="moved">Yeri Değişenler (<span id="countMoved">0</span>)</button>
+        <button class="filter-chip deleted-chip" data-filter="deleted">🗑️ Silinenler (<span id="countDeleted">0</span>)</button>
+      </div>
+
+      <div class="bulk-actions" id="bulkActions" style="display: none;">
+        <button class="btn btn-danger-sm" id="deleteSelectedBtn">
+          🗑️ Seçilenleri Sil (<span id="selectedCount">0</span>)
+        </button>
+      </div>
+
+      <div class="list-summary">
+        <span id="showingCount">0</span> kanal
+      </div>
+    </section>
+
+    <main class="channel-list-container">
+      <div class="channel-table-header">
+        <div class="col-check">
+          <input type="checkbox" id="selectAllCheckbox" title="Tümünü Seç">
+        </div>
+        <div class="col-drag">Taşı</div>
+        <div class="col-num">Sıra No</div>
+        <div class="col-name">Kanal Adı</div>
+        <div class="col-orig">Asıl Sıra</div>
+        <div class="col-quick">Hızlı Taşı</div>
+        <div class="col-actions">İşlemler</div>
+      </div>
+
+      <div class="channel-list" id="channelList">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p>Kanallar yükleniyor...</p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="status-bar">
+      <div class="status-left">
+        <span class="status-indicator"></span>
+        <span id="statusMessage">Hazır. Dosya: CHANNELLIST.bin</span>
+      </div>
+      <div class="status-right">
+        <span id="unsavedBadge" class="unsaved-badge" style="display: none;">Kaydedilmemiş Değişiklikler Var!</span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Multi-Brand TV Guide Modal -->
+  <div class="modal-backdrop" id="guideModal" style="display: none;">
+    <div class="modal-card wide-modal">
+      <div class="modal-header">
+        <h2>🛰️ Televizyona USB ile Kanal Listesi Yükleme Kılavuzu</h2>
+        <button class="modal-close" id="closeGuideModal">&times;</button>
+      </div>
+
+      <div class="guide-brand-tabs">
+        <button class="guide-tab active" data-tab="tab-elton">Elton / Sunny (ALi)</button>
+        <button class="guide-tab" data-tab="tab-vestel">Vestel / Toshiba / Regal</button>
+        <button class="guide-tab" data-tab="tab-samsung">Samsung</button>
+        <button class="guide-tab" data-tab="tab-lg">LG</button>
+        <button class="guide-tab" data-tab="tab-sony">Sony</button>
+        <button class="guide-tab" data-tab="tab-m3u">IPTV / Android</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Tab Elton / Sunny -->
+        <div class="guide-tab-pane active" id="tab-elton">
+          <div class="guide-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Dosyayı USB'ye Kopyalayın</h4>
+              <p>Formatı <strong>ALi (.bin)</strong> seçin ve <strong>"USB İçin İndir"</strong> butonuna basın. İndirilen <code>CHANNELLIST.bin</code> dosyasını FAT32 formatlı USB belleğinizin <strong>ana dizinine</strong> kopyalayın.</p>
+            </div>
+          </div>
+          <div class="guide-step warning-step">
+            <div class="step-num">⚠️</div>
+            <div class="step-content">
+              <h4>ÖNEMLİ: TV'de TKGS Modunu Kapatın</h4>
+              <p class="step-path">Menü ➔ Kurulum ➔ Türksat TKGS Ayarları ➔ <strong>TKGS Modu: KAPALI</strong></p>
+              <p>TKGS açık kalırsa televizyon özel listenizi silip fabrika sırasına döner.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>TV'ye Yükleme</h4>
+              <p class="step-path">Menü ➔ Kurulum ➔ Uydu Ayarları ➔ Uydu Kanal Tablosu ➔ <strong>"USB'den TV'ye Yükleme"</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Vestel -->
+        <div class="guide-tab-pane" id="tab-vestel">
+          <div class="guide-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>.sdx Dosyasını İndirin</h4>
+              <p>Üstten <strong>Vestel / Regal / Toshiba (.sdx)</strong> formatını seçip indirin. Dosyayı FAT32 USB belleğin ana dizinine koyun.</p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Vestel TV'den Yükleme</h4>
+              <p class="step-path">Menü ➔ Ayarlar ➔ Uydu Ayarları ➔ Uydu Kanal Tablosu ➔ <strong>"USB'den TV'ye Yükleme"</strong></p>
+              <p>İşlem tamamlanınca televizyonu kapatıp açın.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Samsung -->
+        <div class="guide-tab-pane" id="tab-samsung">
+          <div class="guide-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>USB Kanal Listesi Aktarımı</h4>
+              <p class="step-path">Ayarlar ➔ Yayın ➔ Uzman Ayarları ➔ <strong>Kanal Listesi Aktarımı</strong></p>
+              <p>Önce TV'nizden <strong>"USB'ye Ver"</strong> diyerek yedeğinizi alın, editörde düzenledikten sonra <strong>"USB'den Al"</strong> seçeneği ile geri yükleyin.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab LG -->
+        <div class="guide-tab-pane" id="tab-lg">
+          <div class="guide-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>LG webOS Kanal Kopyalama</h4>
+              <p class="step-path">Ayarlar ➔ Kanallar ➔ <strong>Kanal Kopyalama (TV'den USB'ye / USB'den TV'ye)</strong></p>
+              <p>Dosyanız <code>GlobalClone00001.TLL</code> adıyla aktarılacaktır.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab Sony -->
+        <div class="guide-tab-pane" id="tab-sony">
+          <div class="guide-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Sony Bravia Program Listesi Transferi</h4>
+              <p class="step-path">Ayarlar ➔ Kanal Kurulumu ➔ Dijital Kurulum ➔ Teknik Ayarlar ➔ <strong>Program Listesi Aktarımı (İçe / Dışa Aktar)</strong></p>
+              <p>Sony TV'lerde <code>sdb.xml</code> dosyası transfer edilir.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab M3U -->
+        <div class="guide-tab-pane" id="tab-m3u">
+          <div class="guide-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>M3U Oynatma Listesi</h4>
+              <p>M3U formatını indirerek VLC Media Player, Smart IPTV, TiviMate, SS IPTV veya Kodi gibi tüm akıllı televizyon ve TV Box uygulamalarında anında kullanabilirsiniz.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="guideUnderstandBtn">Anladım, Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

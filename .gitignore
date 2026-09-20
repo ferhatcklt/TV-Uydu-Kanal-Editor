@@ -1,0 +1,11 @@
+CHANNELLIST_ORIJINAL.bin
+CHANNELLIST_DUZENLENMIS.bin
+CHANNELLIST_TEMP.bin
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
