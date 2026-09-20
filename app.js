@@ -17,6 +17,11 @@ const countHDEl = document.getElementById('countHD');
 const countSDEl = document.getElementById('countSD');
 const countMovedEl = document.getElementById('countMoved');
 const countDeletedEl = document.getElementById('countDeleted');
+const countSporEl = document.getElementById('countSpor');
+const countHaberEl = document.getElementById('countHaber');
+const countCocukEl = document.getElementById('countCocuk');
+const countBelgeselEl = document.getElementById('countBelgesel');
+const countMuzikEl = document.getElementById('countMuzik');
 const selectAllCheckbox = document.getElementById('selectAllCheckbox');
 const bulkActions = document.getElementById('bulkActions');
 const selectedCountEl = document.getElementById('selectedCount');
@@ -56,7 +61,10 @@ const POPULAR_ORDER = [
 ];
 
 const SPORTS_KEYWORDS = ['SPOR', 'SPORT', 'TARAFTAR', 'FIGHT', 'FB TV', 'EUROSPORT'];
-const NEWS_KEYWORDS = ['HABER', 'NEWS', 'SZC', 'HALK', '24 HD', 'ULKE', 'CNN', 'BLOOMBERG', 'NTV', 'TELE1'];
+const NEWS_KEYWORDS = ['HABER', 'NEWS', 'SZC', 'HALK', '24 HD', 'ULKE', 'CNN', 'BLOOMBERG', 'NTV', 'TELE1', 'A HABER', 'TRT HABER', 'TV 24', 'TGRT'];
+const KIDS_KEYWORDS = ['COCUK', 'ÇOCUK', 'MINIKA', 'MİNİKA', 'CARTOON', 'DISNEY', 'NICK', 'BOOMERANG'];
+const DOC_KEYWORDS = ['BELGESEL', 'DMAX', 'TLC', 'NAT GEO', 'DISCOVERY', 'PLANET', 'ANIMAL', 'HISTORY', 'YABAN', 'SCIENCE'];
+const MUSIC_KEYWORDS = ['MUZIK', 'MÜZİK', 'KRAL', 'DREAM', 'NUMBER', 'POWER', 'POP', 'KLASIK', 'NR1', 'TEMPO'];
 
 // Client-side Binary Parser for ALi .bin format
 function parseBinaryChannels(buffer) {
@@ -302,6 +310,12 @@ function updateCounts() {
   countMovedEl.textContent = movedCount;
   countDeletedEl.textContent = deletedCount;
 
+  if (countSporEl) countSporEl.textContent = allChannels.filter(c => SPORTS_KEYWORDS.some(k => c.name.toUpperCase().includes(k))).length;
+  if (countHaberEl) countHaberEl.textContent = allChannels.filter(c => NEWS_KEYWORDS.some(k => c.name.toUpperCase().includes(k))).length;
+  if (countCocukEl) countCocukEl.textContent = allChannels.filter(c => KIDS_KEYWORDS.some(k => c.name.toUpperCase().includes(k))).length;
+  if (countBelgeselEl) countBelgeselEl.textContent = allChannels.filter(c => DOC_KEYWORDS.some(k => c.name.toUpperCase().includes(k))).length;
+  if (countMuzikEl) countMuzikEl.textContent = allChannels.filter(c => MUSIC_KEYWORDS.some(k => c.name.toUpperCase().includes(k))).length;
+
   if (selectedSlots.size > 0) {
     bulkActions.style.display = 'flex';
     selectedCountEl.textContent = selectedSlots.size;
@@ -341,6 +355,11 @@ function getFilteredChannels() {
   if (currentFilter === 'hd') list = list.filter(ch => ch.is_hd);
   else if (currentFilter === 'sd') list = list.filter(ch => !ch.is_hd);
   else if (currentFilter === 'moved') list = list.filter(ch => ch.is_moved);
+  else if (currentFilter === 'spor') list = list.filter(ch => SPORTS_KEYWORDS.some(k => ch.name.toUpperCase().includes(k)));
+  else if (currentFilter === 'haber') list = list.filter(ch => NEWS_KEYWORDS.some(k => ch.name.toUpperCase().includes(k)));
+  else if (currentFilter === 'cocuk') list = list.filter(ch => KIDS_KEYWORDS.some(k => ch.name.toUpperCase().includes(k)));
+  else if (currentFilter === 'belgesel') list = list.filter(ch => DOC_KEYWORDS.some(k => ch.name.toUpperCase().includes(k)));
+  else if (currentFilter === 'muzik') list = list.filter(ch => MUSIC_KEYWORDS.some(k => ch.name.toUpperCase().includes(k)));
 
   return list;
 }
@@ -992,5 +1011,34 @@ function showToast(msg, type) {
   toastEl.className = `toast ${type || 'success'} show`;
   toastTimeout = setTimeout(() => toastEl.classList.remove('show'), 4500);
 }
+
+// Keyboard Shortcuts
+window.addEventListener('keydown', e => {
+  // Ctrl+S or Cmd+S -> Save
+  if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S')) {
+    e.preventDefault();
+    if (saveBtn) saveBtn.click();
+  }
+  // Slash '/' -> Focus search (when not inside an input)
+  if (e.key === '/' && document.activeElement !== searchInput && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    if (searchInput) {
+      searchInput.focus();
+      searchInput.select();
+    }
+  }
+  // Escape -> Clear search or close modal
+  if (e.key === 'Escape') {
+    if (guideModal && guideModal.style.display !== 'none') {
+      guideModal.style.display = 'none';
+    } else if (searchInput && searchInput.value) {
+      searchInput.value = '';
+      searchQuery = '';
+      clearSearchBtn.style.display = 'none';
+      renderChannels();
+      searchInput.blur();
+    }
+  }
+});
 
 loadChannels();

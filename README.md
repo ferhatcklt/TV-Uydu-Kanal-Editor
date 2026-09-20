@@ -2,6 +2,7 @@
 
 Web tabanlı, çok markalı kanal sıralama, düzenleme ve format dönüştürme aracı. Elton, Sunny, Vestel, Toshiba, Regal, SEG gibi televizyonların USB kanal listelerini düzenleyin, gereksizleri temizleyin ve istediğiniz markanın formatına dönüştürerek TV'nize aktarın.
 
+![CI](https://github.com/ferhatcklt/TV-Uydu-Kanal-Editor/actions/workflows/test.yml/badge.svg)
 ![Python](https://img.shields.io/badge/Python-3.7+-3776AB?logo=python&logoColor=white)
 ![License](https://img.shields.io/badge/Lisans-MIT-green)
 ![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey)
