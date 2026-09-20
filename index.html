@@ -133,15 +133,20 @@
     <section class="controls-bar">
       <div class="search-box">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" id="searchInput" placeholder="Kanal adı ara (örn: ATV, NOW, TRT, STAR, SPOR)..." autocomplete="off">
+        <input type="text" id="searchInput" placeholder="Kanal ara... (Kısayol: /)" autocomplete="off">
         <button id="clearSearch" class="clear-search" style="display:none;">&times;</button>
       </div>
 
       <div class="filters">
-        <button class="filter-chip active" data-filter="all">Aktif Kanallar (<span id="countAll">0</span>)</button>
-        <button class="filter-chip" data-filter="hd">Sadece HD (<span id="countHD">0</span>)</button>
-        <button class="filter-chip" data-filter="sd">Sadece SD (<span id="countSD">0</span>)</button>
-        <button class="filter-chip" data-filter="moved">Yeri Değişenler (<span id="countMoved">0</span>)</button>
+        <button class="filter-chip active" data-filter="all">Tümü (<span id="countAll">0</span>)</button>
+        <button class="filter-chip" data-filter="hd">HD (<span id="countHD">0</span>)</button>
+        <button class="filter-chip" data-filter="sd">SD (<span id="countSD">0</span>)</button>
+        <button class="filter-chip" data-filter="spor">⚽ Spor (<span id="countSpor">0</span>)</button>
+        <button class="filter-chip" data-filter="haber">📰 Haber (<span id="countHaber">0</span>)</button>
+        <button class="filter-chip" data-filter="cocuk">👶 Çocuk (<span id="countCocuk">0</span>)</button>
+        <button class="filter-chip" data-filter="belgesel">🦁 Belgesel (<span id="countBelgesel">0</span>)</button>
+        <button class="filter-chip" data-filter="muzik">🎵 Müzik (<span id="countMuzik">0</span>)</button>
+        <button class="filter-chip" data-filter="moved">Değişenler (<span id="countMoved">0</span>)</button>
         <button class="filter-chip deleted-chip" data-filter="deleted">🗑️ Silinenler (<span id="countDeleted">0</span>)</button>
       </div>
 
